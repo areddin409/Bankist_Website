@@ -6,13 +6,21 @@
 'use strict';
 
 ///////////////////////////////////////
-// Modal window
-
+//Selecting Elements
+const btnScrollTo = document.querySelector('.btn--scroll-to');
+const section1 = document.querySelector('#section--1');
+const nav = document.querySelector('nav');
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content');
+
+///////////////////////////////////////
+// Modal window
 const openModal = function (e) {
   e.preventDefault();
   modal.classList.remove('hidden');
@@ -35,7 +43,104 @@ document.addEventListener('keydown', function (e) {
   }
 });
 
+//Button Scrolling
+btnScrollTo.addEventListener('click', function (e) {
+  /*
+  // scrolling (old way)
+  // const s1coords = section1.getBoundingClientRect();
+  // console.log(s1coords);
+  
+  // console.log(e.target.getBoundingClientRect());
+  
+  // console.log('Current scroll (X/Y):', window.pageXOffset, window.pageYOffset);
+  
+  // console.log(
+    //   'Height/width viewport:',
+    //   document.documentElement.clientHeight,
+    //   document.documentElement.clientWidth
+    // );
+    
+    // window.scrollTo({
+      //   left: s1coords.left + window.pageXOffset,
+      //   top: s1coords.top + window.pageYOffset,
+      //   behavior: 'smooth',
+      // });
+      */
+
+  //MUCH BETTER 😁
+  section1.scrollIntoView({ behavior: 'smooth' });
+});
+
+///////////////////////////////////////
+// Page Navigation
+
+// 1. add event listener to common parent element
+// 2. Determine which element originated the event
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  //Matching Strategy
+  if (e.target.classList.contains('nav__link')) {
+    e.preventDefault();
+    //grab id for which section we need to scroll to
+    const id = e.target.getAttribute('href');
+    if (id === '#') return;
+    document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+  }
+});
+
+////////////////////////////////
+//Tabbed Component
+
+tabsContainer.addEventListener('click', function (e) {
+  const clicked = e.target.closest('.operations__tab');
+
+  //Guard clause (return if null aka clicked inside tab container but not on a button)
+  if (!clicked) return;
+
+  //Remove active classes
+  tabs.forEach(tab => tab.classList.remove('operations__tab--active'));
+  tabsContent.forEach(content =>
+    content.classList.remove('operations__content--active')
+  );
+
+  //Activate tab
+  clicked.classList.add('operations__tab--active');
+
+  //Activate content area
+  document
+    .querySelector(`.operations__content--${clicked.dataset.tab}`)
+    .classList.add('operations__content--active');
+});
+
+////////////////////////////////
+//Menu fade animation
+const handleHover = function (e) {
+  if (e.target.classList.contains('nav__link')) {
+    const link = e.target;
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+    const logo = link.closest('.nav').querySelector('img');
+
+    siblings.forEach(el => {
+      if (el !== link) el.style.opacity = this.opacity;
+    });
+    logo.style.opacity = this.opacity;
+  }
+};
+
+//Passing 'argument' into handler
+nav.addEventListener('mouseover', handleHover.bind({ opacity: 0.5 }));
+nav.addEventListener('mouseout', handleHover.bind({ opacity: 1 }));
+
 // ////////////////////////////////
+//
+//  #     # ####### ####### #######  #####
+//  ##    # #     #    #    #       #     #
+//  # #   # #     #    #    #       #
+//  #  #  # #     #    #    #####    #####
+//  #   # # #     #    #    #             #
+//  #    ## #     #    #    #       #     #
+//  #     # #######    #    #######  #####
+
+//
 // //Selecting Elements
 // console.log(document.documentElement);
 // console.log(document.head);
@@ -110,35 +215,57 @@ document.addEventListener('keydown', function (e) {
 // //dont use
 // // logo.className = 'andrew';
 
-const btnScrollTo = document.querySelector('.btn--scroll-to');
-const section1 = document.querySelector('#section--1');
+//Event propagnation Example
+// //rgb(255,255,255)
+// const randomInt = (min, max) =>
+//   Math.floor(Math.random() * (max - min + 1) + min);
+// const randomColor = () =>
+//   `rgb(${randomInt(0, 255)},${randomInt(0, 255)},${randomInt(0, 255)})`;
 
-btnScrollTo.addEventListener('click', function (e) {
-  const s1coords = section1.getBoundingClientRect();
-  console.log(s1coords);
+// document.querySelector('.nav__link').addEventListener('click', function (e) {
+//   this.style.backgroundColor = randomColor();
+//   console.log('Link');
+//   console.log(e.currentTarget === this);
 
-  console.log(e.target.getBoundingClientRect());
+//   //stop propagnation
+//   // e.stopPropagation();
+// });
+// document.querySelector('.nav__links').addEventListener('click', function (e) {
+//   console.log('Container');
+//   this.style.backgroundColor = randomColor();
+// });
+// document.querySelector('.nav').addEventListener('click', function (e) {
+//   console.log('Nav');
+//   this.style.backgroundColor = randomColor();
+// });
 
-  console.log('Current scroll (x/y)', window.pageXOffset, window.pageYOffset);
+// //Traversing the DOM
+// const h1 = document.querySelector('h1');
 
-  console.log(
-    'height/width viewport',
-    document.documentElement.clientWidth,
-    document.documentElement.clientHeight
-  );
+// //going downwards: child
+// console.log(h1.querySelectorAll('.highlight'));
+// console.log(h1.childNodes);
+// console.log(h1.children); //-> HTMLCollection (only for direct children)
+// h1.firstElementChild.style.color = 'white';
+// h1.lastElementChild.style.color = 'blue';
 
-  //Scrolling (bad)
-  // window.scrollTo(
-  //   s1coords.left + window.pageXOffset,
-  //   s1coords.top + window.pageYOffset
-  // );
+// //going upwards: parents
+// console.log(h1.parentNode);
+// console.log(h1.parentElement);
 
-  //Smooth scrolling
-  // window.scrollTo({
-  //   left: s1coords.left + window.pageXOffset,
-  //   top: s1coords.top + window.pageYOffset,
-  //   behavior: 'smooth',
-  // });
+// h1.closest('.header').style.background = 'var(--gradient-secondary)';
+// h1.closest('h1').style.background = 'var(--gradient-primary)';
 
-  section1.scrollIntoView({ behavior: 'smooth' });
-});
+// //Going Sideways: siblings
+// console.log(h1.previousElementSibling);
+// console.log(h1.nextElementSibling);
+
+// console.log(h1.previousSibling);
+// console.log(h1.nextSibling);
+
+// console.log(h1.parentElement.children);
+// [...h1.parentElement.children].forEach(function (child) {
+//   if (child !== h1) {
+//     child.style.transform = 'scale(0.5)';
+//   }
+// });
