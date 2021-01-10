@@ -191,7 +191,7 @@ const sectionObserver = new IntersectionObserver(revealSection, {
 });
 allSections.forEach(function (section) {
   sectionObserver.observe(section);
-  // section.classList.add('section--hidden');
+  section.classList.add('section--hidden');
 });
 
 ////////////////////////////////
@@ -445,3 +445,18 @@ slider();
 //     child.style.transform = 'scale(0.5)';
 //   }
 // });
+
+// //Lifecycle DOM events
+// document.addEventListener('DOMContentLoaded', function (e) {
+//   console.log('HTML parsed and DOM tree built!', e);
+// });
+
+// window.addEventListener('load', function (e) {
+//   console.log('Page Fully loaded', e);
+// });
+
+// // window.addEventListener('beforeunload', function (e) {
+// //   e.preventDefault();
+// //   console.log(e);
+// //   e.returnValue = '';
+// // });
